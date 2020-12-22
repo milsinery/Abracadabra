@@ -5,7 +5,7 @@ const selected = figma.currentPage.findAll(
 );
 const text = selected.filter((item) => item.type === "TEXT");
 
-text.map((item) => replaceText(item.name, item));
+text.map((item) => replaceText(item.name.toLocaleUpperCase(), item));
 figma.closePlugin();
 
 function findParent(obj) {
@@ -15,63 +15,129 @@ function findParent(obj) {
 async function replaceText(type, textLayer) {
   await figma.loadFontAsync(textLayer.fontName);
 
-  switch (type.toLocaleUpperCase()) {
-    case "$NAME":
-      textLayer.characters = faker.name.findName();
-      break;
-    case "$FIRST NAME":
-      textLayer.characters = faker.name.firstName();
-      break;
-    case "$LAST NAME":
-      textLayer.characters = faker.name.lastName();
-      break;
-    case "$USERNAME":
-      textLayer.characters = faker.internet.userName();
-      break;
-    case "$JOB":
-      textLayer.characters = faker.name.jobTitle();
-      break;
-    case "$EMAIL":
-      textLayer.characters = faker.internet.email();
-      break;
-    case "$PHONE NUMBER":
-      textLayer.characters = faker.phone.phoneNumber();
-      break;
-    case "$COUNTRY":
-      textLayer.characters = faker.address.country();
-      break;
-    case "$CITY":
-      textLayer.characters = faker.address.city();
-      break;
-    case "$ZIP CODE":
-      textLayer.characters = faker.address.zipCode();
-      break;
-    case "$ADDRESS":
-      textLayer.characters = faker.address.streetAddress();
-      break;
-    case "$MONTH":
-      textLayer.characters = faker.date.month();
-      break;
-    case "$WEEKDAY":
-      textLayer.characters = faker.date.weekday();
-      break;
-    case "$CREDIT CARD":
-      textLayer.characters = faker.finance.creditCardNumber();
-      break;
-    case "$PRICE":
-      textLayer.characters = faker.commerce.price();
-      break;
-    case "$NUMBER":
-      textLayer.characters = faker.random.number().toString();
-      break;
-    case "$WORD":
-      textLayer.characters = faker.random.word();
-      break;
-    case "$PARAGRAPH":
-      textLayer.characters = faker.lorem.paragraph();
-      break;
-    case "$AGE":
-      textLayer.characters = (Math.floor(Math.random() * (100 - 18)) + 18).toString();
-      break;
+  if (type.match(/[А-Я]/)) {
+    faker.locale = "ru";
+
+    textLayer.characters =
+      type === "$ПОЛНОЕ ИМЯ"
+        ? faker.name.findName()
+        : type === "$ИМЯ"
+        ? faker.name.firstName()
+        : type === "$ФАМИЛИЯ"
+        ? faker.name.findName()
+        : type === "$НИК"
+        ? faker.internet.userName()
+        : type === "$ДОЛЖНОСТЬ"
+        ? faker.name.jobTitle()
+        : type === "$ПОЧТА"
+        ? faker.internet.email()
+        : type === "$НОМЕР ТЕЛЕФОНА"
+        ? faker.phone.phoneNumber()
+        : type === "$СТРАНА"
+        ? faker.address.country()
+        : type === "$ГОРОД"
+        ? faker.address.city()
+        : type === "$ИНДЕКС"
+        ? faker.address.zipCode()
+        : type === "$АДРЕС"
+        ? faker.address.streetAddress()
+        : type === "$МЕСЯЦ"
+        ? faker.date.month()
+        : type === "$ДЕНЬ НЕДЕЛИ"
+        ? faker.date.weekday()
+        : type === "$НОМЕР КАРТЫ"
+        ? faker.finance.creditCardNumber()
+        : type === "$ЦЕНА"
+        ? faker.commerce.price() + " ₽"
+        : type === "$ЧИСЛО"
+        ? faker.random.number().toString()
+        : type === "$СЛОВО"
+        ? faker.random.word()
+        : type === "$АБЗАЦ"
+        ? faker.lorem.paragraph()
+        : type === "$ВОЗРАСТ"
+        ? (Math.floor(Math.random() * (100 - 18)) + 18).toString()
+        : 
+`Полное имя
+Имя
+Фамилия
+Ник
+Должность
+Почта
+Номер телефона
+Страна
+Город
+Индекс
+Адрес
+Месяц
+День недели
+Номер карты
+Цена
+Число
+Слово
+Абзац
+Возраст`
+  } else {
+    faker.locale = "en";
+
+    textLayer.characters =
+      type === "$NAME"
+        ? faker.name.findName()
+        : type === "$FIRST NAME"
+        ? faker.name.firstName()
+        : type === "$LAST NAME"
+        ? faker.name.findName()
+        : type === "$USERNAME"
+        ? faker.internet.userName()
+        : type === "$JOB"
+        ? faker.name.jobTitle()
+        : type === "$EMAIL"
+        ? faker.internet.email()
+        : type === "$PHONE NUMBER"
+        ? faker.phone.phoneNumber()
+        : type === "$COUNTRY"
+        ? faker.address.country()
+        : type === "$CITY"
+        ? faker.address.city()
+        : type === "$ZIP CODE"
+        ? faker.address.zipCode()
+        : type === "$ADDRESS"
+        ? faker.address.streetAddress()
+        : type === "$MONTH"
+        ? faker.date.month()
+        : type === "$WEEKDAY"
+        ? faker.date.weekday()
+        : type === "$CREDIT CARD"
+        ? faker.finance.creditCardNumber()
+        : type === "$PRICE"
+        ? "$" + faker.commerce.price()
+        : type === "$NUMBER"
+        ? faker.random.number().toString()
+        : type === "$WORD"
+        ? faker.random.word()
+        : type === "$PARAGRAPH"
+        ? faker.lorem.paragraph()
+        : type === "$AGE"
+        ? (Math.floor(Math.random() * (100 - 18)) + 18).toString()
+        : 
+`Name
+First Name
+Last Name
+Username
+Job
+Email
+Phone Number
+Country
+City
+Zip Code
+Address
+Month
+Weekday
+Credit Card
+Price
+Number
+Word
+Paragraph
+Age`
   }
 }
