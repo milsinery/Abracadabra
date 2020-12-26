@@ -57,26 +57,7 @@ async function replaceText(type, textLayer) {
         ? faker.lorem.paragraph()
         : type === "$ВОЗРАСТ"
         ? (Math.floor(Math.random() * (100 - 18)) + 18).toString()
-        : 
-`Полное имя
-Имя
-Фамилия
-Ник
-Должность
-Почта
-Номер телефона
-Страна
-Город
-Индекс
-Адрес
-Месяц
-День недели
-Номер карты
-Цена
-Число
-Слово
-Абзац
-Возраст`
+        : "Полное имя\nИмя\nФамилия\nНик\nДолжность\nПочта\nНомер телефона\nСтрана\nГород\nИндекс\nАдрес\nМесяц\nДень недели\nНомер карты\nЦена\nЧисло\nСлово\nАбзац\nВозраст";
   } else {
     faker.locale = "en";
 
@@ -119,25 +100,6 @@ async function replaceText(type, textLayer) {
         ? faker.lorem.paragraph()
         : type === "$AGE"
         ? (Math.floor(Math.random() * (100 - 18)) + 18).toString()
-        : 
-`Name
-First Name
-Last Name
-Username
-Job
-Email
-Phone Number
-Country
-City
-Zip Code
-Address
-Month
-Weekday
-Credit Card
-Price
-Number
-Word
-Paragraph
-Age`
+        : "Name\nFirst Name\nLast Name\nUsername\nJob\nEmail\nPhone Number\nCountry\nCity\nZip Code\nAddress\nMonth\nWeekday\nCredit Card\nPrice\nNumber\nWord\nParagraph\nAge";
   }
 }
