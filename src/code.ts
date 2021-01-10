@@ -56,7 +56,9 @@ const replaceText = async (name, textLayer) => {
         ? faker.lorem.paragraph()
         : name === "$ВОЗРАСТ"
         ? (Math.floor(Math.random() * (100 - 18)) + 18).toString()
-        : "Полное имя\nИмя\nФамилия\nНик\nДолжность\nПочта\nНомер телефона\nСтрана\nГород\nИндекс\nАдрес\nМесяц\nДень недели\nНомер карты\nЦена\nЧисло\nСлово\nАбзац\nВозраст";
+        : name === "$ПОДСКАЗКА"
+        ? "Полное имя\nИмя\nФамилия\nНик\nДолжность\nПочта\nНомер телефона\nСтрана\nГород\nИндекс\nАдрес\nМесяц\nДень недели\nНомер карты\nЦена\nЧисло\nСлово\nАбзац\nВозраст"
+        : textLayer.characters
   } else {
     faker.locale = "en";
 
@@ -99,7 +101,9 @@ const replaceText = async (name, textLayer) => {
         ? faker.lorem.paragraph()
         : name === "$AGE"
         ? (Math.floor(Math.random() * (100 - 18)) + 18).toString()
-        : "Name\nFirst Name\nLast Name\nUsername\nJob\nEmail\nPhone Number\nCountry\nCity\nZip Code\nAddress\nMonth\nWeekday\nCredit Card\nPrice\nNumber\nWord\nParagraph\nAge";
+        : name === "$HELP"
+        ? "Name\nFirst Name\nLast Name\nUsername\nJob\nEmail\nPhone Number\nCountry\nCity\nZip Code\nAddress\nMonth\nWeekday\nCredit Card\nPrice\nNumber\nWord\nParagraph\nAge"
+        : textLayer.characters
   }
 };
 
