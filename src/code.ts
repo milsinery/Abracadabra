@@ -1,105 +1,198 @@
 import faker from "faker";
 
-const selected = figma.currentPage.findAll(
-  (item) => findParent(item).type !== "COMPONENT" && item.name[0] === "$"
-);
-const text = selected.filter((item) => item.type === "TEXT");
+figma.showUI(__html__, { visible: false });
 
-text.map((item) => replaceText(item.name.toLocaleUpperCase(), item));
-figma.closePlugin();
+const addImage = (layer, data) => {
+  let imageHash = figma.createImage(data).hash;
+  layer.fills = [{ type: "IMAGE", scaleMode: "FILL", imageHash }];
+};
 
-function findParent(obj) {
+const findParent = (obj) => {
   return obj.parent.type === "PAGE" ? obj : findParent(obj.parent);
-}
+};
 
-async function replaceText(type, textLayer) {
+const replaceText = async (name, textLayer) => {
   await figma.loadFontAsync(textLayer.fontName);
 
-  if (type.match(/[А-Я]/)) {
+  if (name.match(/[А-Я]/)) {
     faker.locale = "ru";
 
     textLayer.characters =
-      type === "$ПОЛНОЕ ИМЯ"
+      name === "$ПОЛНОЕ ИМЯ"
         ? faker.name.findName()
-        : type === "$ИМЯ"
+        : name === "$ИМЯ"
         ? faker.name.firstName()
-        : type === "$ФАМИЛИЯ"
+        : name === "$ФАМИЛИЯ"
         ? faker.name.findName()
-        : type === "$НИК"
+        : name === "$НИК"
         ? faker.internet.userName()
-        : type === "$ДОЛЖНОСТЬ"
+        : name === "$ДОЛЖНОСТЬ"
         ? faker.name.jobTitle()
-        : type === "$ПОЧТА"
+        : name === "$ПОЧТА"
         ? faker.internet.email()
-        : type === "$НОМЕР ТЕЛЕФОНА"
+        : name === "$НОМЕР ТЕЛЕФОНА"
         ? faker.phone.phoneNumber()
-        : type === "$СТРАНА"
+        : name === "$СТРАНА"
         ? faker.address.country()
-        : type === "$ГОРОД"
+        : name === "$ГОРОД"
         ? faker.address.city()
-        : type === "$ИНДЕКС"
+        : name === "$ИНДЕКС"
         ? faker.address.zipCode()
-        : type === "$АДРЕС"
+        : name === "$АДРЕС"
         ? faker.address.streetAddress()
-        : type === "$МЕСЯЦ"
+        : name === "$МЕСЯЦ"
         ? faker.date.month()
-        : type === "$ДЕНЬ НЕДЕЛИ"
+        : name === "$ДЕНЬ НЕДЕЛИ"
         ? faker.date.weekday()
-        : type === "$НОМЕР КАРТЫ"
+        : name === "$НОМЕР КАРТЫ"
         ? faker.finance.creditCardNumber()
-        : type === "$ЦЕНА"
+        : name === "$ЦЕНА"
         ? faker.commerce.price() + " ₽"
-        : type === "$ЧИСЛО"
+        : name === "$ЧИСЛО"
         ? faker.random.number().toString()
-        : type === "$СЛОВО"
+        : name === "$СЛОВО"
         ? faker.random.word()
-        : type === "$АБЗАЦ"
+        : name === "$АБЗАЦ"
         ? faker.lorem.paragraph()
-        : type === "$ВОЗРАСТ"
+        : name === "$ВОЗРАСТ"
         ? (Math.floor(Math.random() * (100 - 18)) + 18).toString()
         : "Полное имя\nИмя\nФамилия\nНик\nДолжность\nПочта\nНомер телефона\nСтрана\nГород\nИндекс\nАдрес\nМесяц\nДень недели\nНомер карты\nЦена\nЧисло\nСлово\nАбзац\nВозраст";
   } else {
     faker.locale = "en";
 
     textLayer.characters =
-      type === "$NAME"
+      name === "$NAME"
         ? faker.name.findName()
-        : type === "$FIRST NAME"
+        : name === "$FIRST NAME"
         ? faker.name.firstName()
-        : type === "$LAST NAME"
+        : name === "$LAST NAME"
         ? faker.name.findName()
-        : type === "$USERNAME"
+        : name === "$USERNAME"
         ? faker.internet.userName()
-        : type === "$JOB"
+        : name === "$JOB"
         ? faker.name.jobTitle()
-        : type === "$EMAIL"
+        : name === "$EMAIL"
         ? faker.internet.email()
-        : type === "$PHONE NUMBER"
+        : name === "$PHONE NUMBER"
         ? faker.phone.phoneNumber()
-        : type === "$COUNTRY"
+        : name === "$COUNTRY"
         ? faker.address.country()
-        : type === "$CITY"
+        : name === "$CITY"
         ? faker.address.city()
-        : type === "$ZIP CODE"
+        : name === "$ZIP CODE"
         ? faker.address.zipCode()
-        : type === "$ADDRESS"
+        : name === "$ADDRESS"
         ? faker.address.streetAddress()
-        : type === "$MONTH"
+        : name === "$MONTH"
         ? faker.date.month()
-        : type === "$WEEKDAY"
+        : name === "$WEEKDAY"
         ? faker.date.weekday()
-        : type === "$CREDIT CARD"
+        : name === "$CREDIT CARD"
         ? faker.finance.creditCardNumber()
-        : type === "$PRICE"
+        : name === "$PRICE"
         ? "$" + faker.commerce.price()
-        : type === "$NUMBER"
+        : name === "$NUMBER"
         ? faker.random.number().toString()
-        : type === "$WORD"
+        : name === "$WORD"
         ? faker.random.word()
-        : type === "$PARAGRAPH"
+        : name === "$PARAGRAPH"
         ? faker.lorem.paragraph()
-        : type === "$AGE"
+        : name === "$AGE"
         ? (Math.floor(Math.random() * (100 - 18)) + 18).toString()
         : "Name\nFirst Name\nLast Name\nUsername\nJob\nEmail\nPhone Number\nCountry\nCity\nZip Code\nAddress\nMonth\nWeekday\nCredit Card\nPrice\nNumber\nWord\nParagraph\nAge";
   }
-}
+};
+
+// getting the necessary elements from the layout
+const selected = figma.currentPage.findAll(
+  (item) => findParent(item).type !== "COMPONENT" && item.name[0] === "$"
+);
+const text = selected.filter((item) => item.type === "TEXT");
+const images = selected.filter(
+  (item) =>
+    item.type !== "TEXT" &&
+    (item.name.toUpperCase() === "$PHOTO" ||
+      item.name.toUpperCase() === "$ФОТО")
+);
+
+const createInfoPage = (info) => {
+  const createInfoString = async (parent, author, link, url) => {
+    const line = figma.createFrame();
+    line.name = author;
+    line.layoutMode = "HORIZONTAL";
+    line.counterAxisSizingMode = "AUTO";
+    line.primaryAxisSizingMode = "AUTO";
+    line.itemSpacing = 8;
+
+    await figma.loadFontAsync({ family: "Roboto", style: "Regular" });
+
+    const info = figma.createText();
+    info.characters = `${author} — ${link}, Photo — ${url}, unsplash.com`;
+
+    line.appendChild(info);
+
+    parent.appendChild(line);
+  };
+
+  if (
+    figma.currentPage.findChild(
+      (item) => item.name === "Abracadabra uses photos from Unsplash"
+    )
+  ) {
+    figma.currentPage
+      .findChild(
+        (item) => item.name === "Abracadabra uses photos from Unsplash"
+      )
+      .remove();
+  }
+
+  const frame = figma.createFrame();
+  frame.name = "Abracadabra uses photos from Unsplash";
+  frame.layoutMode = "VERTICAL";
+  frame.counterAxisSizingMode = "AUTO";
+  frame.primaryAxisSizingMode = "AUTO";
+  frame.expanded = false;
+  frame.paddingTop = 16;
+  frame.paddingRight = 16;
+  frame.paddingBottom = 16;
+  frame.paddingLeft = 16;
+  frame.itemSpacing = 16;
+  frame.bottomLeftRadius = 4;
+  frame.bottomRightRadius = 4;
+  frame.topLeftRadius = 4;
+  frame.topRightRadius = 4;
+
+  for (const item of info) {
+    createInfoString(frame, item.name, item.link, item.url);
+  }
+
+  figma.currentPage.appendChild(frame);
+};
+
+// main work
+figma.ui.postMessage(images.length);
+
+// replacing text and images
+figma.ui.onmessage = (msg) => {
+  if(msg.type === "empty" && text.length === 0) {
+    figma.notify(msg.data, { timeout: 1500 });
+  }
+
+  if (msg.type === "error") {
+    figma.notify(msg.data, { timeout: 1500 });
+  }
+
+ if (msg.type === "data") {
+    for (let i = 0; i < images.length; i++) {
+      addImage(images[i], msg.data.images[i]);
+    }
+    createInfoPage(msg.data.info);
+  } 
+  
+  if (text.length > 0) {
+    text.map((item) => replaceText(item.name.toLocaleUpperCase(), item));
+  }
+
+  figma.notify("Whoo!", { timeout: 1500 });
+  figma.closePlugin();
+};

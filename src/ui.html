@@ -1,0 +1,166 @@
+<script>
+  onmessage = (msg) => {
+    if (msg.data.pluginMessage > 0) {
+      let state = {
+        imagesNumber: msg.data.pluginMessage,
+        pagesNumber: Math.floor(msg.data.pluginMessage / 30 + 1),
+        pageNumber: 1,
+        results: {
+          info: [],
+          images: [],
+        },
+      };
+
+      const tryGetImages = () => {
+        if (state.imagesNumber === 0) {
+          parent.postMessage(
+            { pluginMessage: { type: "data", data: state.results } },
+            "*"
+          );
+        }
+      };
+
+      for (let i = state.pagesNumber; i > 0; i--) {
+        if (state.imagesNumber > 500) {
+          parent.postMessage(
+            {
+              pluginMessage: {
+                type: "error",
+                data: "Too many images — we can't handle that much :(",
+              },
+            },
+            "*"
+          );
+        }
+
+        if (state.imagesNumber === 1) {
+          fetch(
+            "https://api.unsplash.com/photos/random?client_id=IaihTE2BNqZx11LDh7V_T85XwUU-a9aMy0VBjtNbKvI"
+          )
+            .catch(() => {
+              parent.postMessage(
+                {
+                  pluginMessage: {
+                    type: "error",
+                    data: "Unsplash is not with us or the internet is down :(",
+                  },
+                },
+                "*"
+              );
+            })
+            .then((r) => r.json())
+            .then((item) => {
+              state.results.info.push({
+                name: item.user.name,
+                link: item.user.links.html,
+                url: item.links.html,
+              });
+
+              fetch(item.urls.regular)
+                .then((r) => r.arrayBuffer(r))
+                .then((a) => {
+                  state.results.images.push(new Uint8Array(a));
+                  state.imagesNumber--;
+                  tryGetImages();
+                })
+                .finally(() => {
+                  state.pageNumber++;
+                });
+            });
+        }
+
+        if (state.imagesNumber >= 30) {
+          fetch(
+            "https://api.unsplash.com/photos?page=" +
+              state.pageNumber +
+              "&per_page=30&client_id=IaihTE2BNqZx11LDh7V_T85XwUU-a9aMy0VBjtNbKvI"
+          )
+            .catch(() => {
+              parent.postMessage(
+                {
+                  pluginMessage: {
+                    type: "error",
+                    data: "Unsplash is not with us or the internet is down :(",
+                  },
+                },
+                "*"
+              );
+            })
+            .then((r) => r.json())
+            .then((a) =>
+              a.map((item) => {
+                state.results.info.push({
+                  name: item.user.name,
+                  link: item.user.links.html,
+                  url: item.links.html,
+                });
+                return item.urls.regular;
+              })
+            )
+            .then((urls) =>
+              urls.map((url) =>
+                fetch(url)
+                  .then((r) => r.arrayBuffer(r))
+                  .then((a) => {
+                    state.results.images.push(new Uint8Array(a));
+                    state.imagesNumber--;
+                    tryGetImages();
+                  })
+              )
+            )
+            .finally(() => {
+              state.pageNumber++;
+            });
+        }
+
+        if (state.imagesNumber < 30) {
+          fetch(
+            "https://api.unsplash.com/photos?page=" +
+              state.pageNumber +
+              "&per_page=" +
+              state.imagesNumber +
+              "&client_id=IaihTE2BNqZx11LDh7V_T85XwUU-a9aMy0VBjtNbKvI"
+          )
+            .catch(() => {
+              parent.postMessage(
+                {
+                  pluginMessage: {
+                    type: "error",
+                    data: "Unsplash is not with us or the internet is down :(",
+                  },
+                },
+                "*"
+              );
+            })
+            .then((r) => r.json())
+            .then((a) =>
+              a.map((item) => {
+                state.results.info.push({
+                  name: item.user.name,
+                  link: item.user.links.html,
+                  url: item.links.html,
+                });
+                return item.urls.regular;
+              })
+            )
+            .then((urls) =>
+              urls.map((url) =>
+                fetch(url)
+                  .then((r) => r.arrayBuffer(r))
+                  .then((a) => {
+                    state.results.images.push(new Uint8Array(a));
+                    state.imagesNumber--;
+                    tryGetImages();
+                  })
+              )
+            )
+            .finally(() => {
+              state.pageNumber++;
+            });
+        }
+      }
+    } else {
+      parent.postMessage({ pluginMessage: { type: "empty", data: "No time for magic" } }, "*");
+    }
+  };
+</script>
