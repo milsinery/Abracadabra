@@ -11,6 +11,20 @@ const findParent = (obj) => {
   return obj.parent.type === "PAGE" ? obj : findParent(obj.parent);
 };
 
+const getDRandomDate = (locale = "en") => {
+  const randomDate = new Date(2021, Math.floor(Math.random() * (13 - 1) + 1), Math.floor(Math.random() * (29 - 1) + 1));
+
+  const getMonth = (num) => {
+    if(locale === "en") {
+      return num === 0 ? "Jan" : num === 1 ? "Feb" : num === 2 ? "Mar" : num === 3 ? "Apr" : num === 4 ? "May" : num === 5 ? "Jun" : num === 6 ? "Jul" : num === 7 ? "Aug" : num === 8 ? "Sep" : num === 9 ? "Oct" : num === 10 ? "Nov" : "Dec";
+    } else {
+      return num === 0 ? "Янв" : num === 1 ? "Фев" : num === 2 ? "Мар" : num === 3 ? "Апр" : num === 4 ? "Май" : num === 5 ? "Июн" : num === 6 ? "Июл" : num === 7 ? "Авг" : num === 8 ? "Сен" : num === 9 ? "Окт" : num === 10 ? "Ноя" : "Дек";
+    }
+  }
+
+  return locale === "en" ? `${getMonth(randomDate.getMonth())} ${randomDate.getDate()} ${randomDate.getFullYear()}` : `${randomDate.getDate()} ${getMonth(randomDate.getMonth())} ${randomDate.getFullYear()}`;
+}
+
 const replaceText = async (name, textLayer) => {
   await figma.loadFontAsync(textLayer.fontName);
 
@@ -58,6 +72,8 @@ const replaceText = async (name, textLayer) => {
         ? (Math.floor(Math.random() * (100 - 18)) + 18).toString()
         : name === "$ПОДСКАЗКА"
         ? "Полное имя\nИмя\nФамилия\nНик\nДолжность\nПочта\nНомер телефона\nСтрана\nГород\nИндекс\nАдрес\nМесяц\nДень недели\nНомер карты\nЦена\nЧисло\nСлово\nАбзац\nВозраст"
+        : name === "$ДАТА"
+        ? getDRandomDate("ru")
         : textLayer.characters
   } else {
     faker.locale = "en";
@@ -103,6 +119,8 @@ const replaceText = async (name, textLayer) => {
         ? (Math.floor(Math.random() * (100 - 18)) + 18).toString()
         : name === "$HELP"
         ? "Name\nFirst Name\nLast Name\nUsername\nJob\nEmail\nPhone Number\nCountry\nCity\nZip Code\nAddress\nMonth\nWeekday\nCredit Card\nPrice\nNumber\nWord\nParagraph\nAge"
+        : name === "$DATE"
+        ? getDRandomDate()
         : textLayer.characters
   }
 };
