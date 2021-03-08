@@ -76,52 +76,101 @@ const replaceText = async (name, textLayer) => {
         ? getDRandomDate("ru")
         : textLayer.characters
   } else {
-    faker.locale = "en";
+    if(name.lastIndexOf("_DE") !== -1) {
+      faker.locale = "de";
 
-    textLayer.characters =
-      name === "$NAME"
-        ? faker.name.findName()
-        : name === "$FIRST NAME"
-        ? faker.name.firstName()
-        : name === "$LAST NAME"
-        ? faker.name.findName()
-        : name === "$USERNAME"
-        ? faker.internet.userName()
-        : name === "$JOB"
-        ? faker.name.jobTitle()
-        : name === "$EMAIL"
-        ? faker.internet.email()
-        : name === "$PHONE NUMBER"
-        ? faker.phone.phoneNumber()
-        : name === "$COUNTRY"
-        ? faker.address.country()
-        : name === "$CITY"
-        ? faker.address.city()
-        : name === "$ZIP CODE"
-        ? faker.address.zipCode()
-        : name === "$ADDRESS"
-        ? faker.address.streetAddress()
-        : name === "$MONTH"
-        ? faker.date.month()
-        : name === "$WEEKDAY"
-        ? faker.date.weekday()
-        : name === "$CREDIT CARD"
-        ? faker.finance.creditCardNumber()
-        : name === "$PRICE"
-        ? "$" + faker.commerce.price()
-        : name === "$NUMBER"
-        ? faker.random.number().toString()
-        : name === "$WORD"
-        ? faker.random.word()
-        : name === "$PARAGRAPH"
-        ? faker.lorem.paragraph()
-        : name === "$AGE"
-        ? (Math.floor(Math.random() * (100 - 18)) + 18).toString()
-        : name === "$HELP"
-        ? "Name\nFirst Name\nLast Name\nUsername\nJob\nEmail\nPhone Number\nCountry\nCity\nZip Code\nAddress\nMonth\nWeekday\nCredit Card\nPrice\nNumber\nWord\nParagraph\nAge"
-        : name === "$DATE"
-        ? getDRandomDate()
-        : textLayer.characters
+      textLayer.characters =
+        name === "$NAME_DE"
+          ? faker.name.findName()
+          : name === "$FIRST NAME_DE"
+          ? faker.name.firstName()
+          : name === "$LAST NAME_DE"
+          ? faker.name.findName()
+          : name === "$USERNAME_DE"
+          ? faker.internet.userName()
+          : name === "$JOB_DE"
+          ? faker.name.jobTitle()
+          : name === "$EMAIL_DE"
+          ? faker.internet.email()
+          : name === "$PHONE NUMBER_DE"
+          ? faker.phone.phoneNumber()
+          : name === "$COUNTRY_DE"
+          ? faker.address.country()
+          : name === "$CITY_DE"
+          ? faker.address.city()
+          : name === "$ZIP CODE_DE"
+          ? faker.address.zipCode()
+          : name === "$ADDRESS_DE"
+          ? faker.address.streetAddress()
+          : name === "$MONTH_DE"
+          ? faker.date.month()
+          : name === "$WEEKDAY_DE"
+          ? faker.date.weekday()
+          : name === "$CREDIT CARD_DE"
+          ? faker.finance.creditCardNumber()
+          : name === "$PRICE_DE"
+          ? "$" + faker.commerce.price()
+          : name === "$NUMBER_DE"
+          ? faker.random.number().toString()
+          : name === "$WORD_DE"
+          ? faker.random.word()
+          : name === "$PARAGRAPH_DE"
+          ? faker.lorem.paragraph()
+          : name === "$AGE_DE"
+          ? (Math.floor(Math.random() * (100 - 18)) + 18).toString()
+          : name === "$HELP_DE"
+          ? "Name\nFirst Name\nLast Name\nUsername\nJob\nEmail\nPhone Number\nCountry\nCity\nZip Code\nAddress\nMonth\nWeekday\nCredit Card\nPrice\nNumber\nWord\nParagraph\nAge"
+          : name === "$DATE_DE"
+          ? getDRandomDate()
+          : textLayer.characters
+    } else {
+      faker.locale = "en";
+
+      textLayer.characters =
+        name === "$NAME"
+          ? faker.name.findName()
+          : name === "$FIRST NAME"
+          ? faker.name.firstName()
+          : name === "$LAST NAME"
+          ? faker.name.findName()
+          : name === "$USERNAME"
+          ? faker.internet.userName()
+          : name === "$JOB"
+          ? faker.name.jobTitle()
+          : name === "$EMAIL"
+          ? faker.internet.email()
+          : name === "$PHONE NUMBER"
+          ? faker.phone.phoneNumber()
+          : name === "$COUNTRY"
+          ? faker.address.country()
+          : name === "$CITY"
+          ? faker.address.city()
+          : name === "$ZIP CODE"
+          ? faker.address.zipCode()
+          : name === "$ADDRESS"
+          ? faker.address.streetAddress()
+          : name === "$MONTH"
+          ? faker.date.month()
+          : name === "$WEEKDAY"
+          ? faker.date.weekday()
+          : name === "$CREDIT CARD"
+          ? faker.finance.creditCardNumber()
+          : name === "$PRICE"
+          ? "$" + faker.commerce.price()
+          : name === "$NUMBER"
+          ? faker.random.number().toString()
+          : name === "$WORD"
+          ? faker.random.word()
+          : name === "$PARAGRAPH"
+          ? faker.lorem.paragraph()
+          : name === "$AGE"
+          ? (Math.floor(Math.random() * (100 - 18)) + 18).toString()
+          : name === "$HELP"
+          ? "Name\nFirst Name\nLast Name\nUsername\nJob\nEmail\nPhone Number\nCountry\nCity\nZip Code\nAddress\nMonth\nWeekday\nCredit Card\nPrice\nNumber\nWord\nParagraph\nAge"
+          : name === "$DATE"
+          ? getDRandomDate()
+          : textLayer.characters
+    }
   }
 };
 
