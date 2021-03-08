@@ -85,7 +85,7 @@ const replaceText = async (name, textLayer) => {
           : name === "$FIRST NAME_DE"
           ? faker.name.firstName()
           : name === "$LAST NAME_DE"
-          ? faker.name.findName()
+          ? faker.name.lastName()
           : name === "$USERNAME_DE"
           ? faker.internet.userName()
           : name === "$JOB_DE"
@@ -132,7 +132,7 @@ const replaceText = async (name, textLayer) => {
           : name === "$FIRST NAME"
           ? faker.name.firstName()
           : name === "$LAST NAME"
-          ? faker.name.findName()
+          ? faker.name.lastName()
           : name === "$USERNAME"
           ? faker.internet.userName()
           : name === "$JOB"
