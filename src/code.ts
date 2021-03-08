@@ -119,7 +119,7 @@ const replaceText = async (name, textLayer) => {
           : name === "$AGE_DE"
           ? (Math.floor(Math.random() * (100 - 18)) + 18).toString()
           : name === "$HELP_DE"
-          ? "Name\nFirst Name\nLast Name\nUsername\nJob\nEmail\nPhone Number\nCountry\nCity\nZip Code\nAddress\nMonth\nWeekday\nCredit Card\nPrice\nNumber\nWord\nParagraph\nAge"
+          ? "Name_de\nFirst Name_de\nLast Name_de\nUsername_de\nJob_de\nEmail_de\nPhone Number_de\nCountry_de\nCity_de\nZip Code_de\nAddress_de\nMonth_de\nWeekday_de\nCredit Card_de\nPrice_de\nNumber_de\nWord_de\nParagraph_de\nAge_de"
           : name === "$DATE_DE"
           ? getDRandomDate()
           : textLayer.characters
