@@ -265,5 +265,7 @@ figma.ui.onmessage = (msg) => {
   }
 
   figma.notify("Whoo!", { timeout: 1500 });
+
+  figma.currentPage.setRelaunchData({ open: '' });
   figma.closePlugin();
 };
