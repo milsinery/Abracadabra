@@ -2,9 +2,13 @@ import faker from "faker";
 
 figma.showUI(__html__, { visible: false });
 
-const addImage = (layer, data) => {
+const addImage = (layer, data, onceChange = false) => {
   let imageHash = figma.createImage(data).hash;
   layer.fills = [{ type: "IMAGE", scaleMode: "FILL", imageHash }];
+
+  if(onceChange) {
+    layer.name = "🏞";
+  }
 };
 
 const findParent = (obj) => {
@@ -25,7 +29,7 @@ const getDRandomDate = (locale = "en") => {
   return locale === "en" ? `${getMonth(randomDate.getMonth())} ${randomDate.getDate()} ${randomDate.getFullYear()}` : `${randomDate.getDate()} ${getMonth(randomDate.getMonth())} ${randomDate.getFullYear()}`;
 }
 
-const replaceText = async (name, textLayer) => {
+const replaceText = async (name, textLayer, onceChange = false) => {
   await figma.loadFontAsync(textLayer.fontName);
 
   if (name.match(/[А-Я]/)) {
@@ -172,13 +176,20 @@ const replaceText = async (name, textLayer) => {
           : textLayer.characters
     }
   }
+
+  if(onceChange) {
+    textLayer.name = textLayer.characters;
+  }
 };
 
 // getting the necessary elements from the layout
 const selected = figma.currentPage.findAll(
   (item) => findParent(item).type !== "COMPONENT" && item.name[0] === "$"
 );
+
 const text = selected.filter((item) => item.type === "TEXT");
+const onChangeSetting = figma.currentPage.findAll(item => item.type === "TEXT" && (item.characters === "Abracadabra for one time" || item.characters === "Абракадабра на один раз")).length > 0 ? true : false;
+
 const images = selected.filter(
   (item) =>
     item.type !== "TEXT" &&
@@ -255,13 +266,13 @@ figma.ui.onmessage = (msg) => {
 
  if (msg.type === "data") {
     for (let i = 0; i < images.length; i++) {
-      addImage(images[i], msg.data.images[i]);
+      addImage(images[i], msg.data.images[i], onChangeSetting);
     }
     createInfoPage(msg.data.info);
   } 
   
   if (text.length > 0) {
-    text.map((item) => replaceText(item.name.toLocaleUpperCase(), item));
+    text.map((item) => replaceText(item.name.toLocaleUpperCase(), item, onChangeSetting));
   }
 
   figma.notify("Whoo!", { timeout: 1500 });
