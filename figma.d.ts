@@ -507,7 +507,13 @@ interface VectorNode extends DefaultShapeMixin, ConstraintMixin, CornerMixin {
   handleMirroring: HandleMirroring | symbol
 }
 
+type HyperlinkTarget = {
+  type: "URL" | "NODE"
+  value: string
+}
+
 interface TextNode extends DefaultShapeMixin, ConstraintMixin {
+  [x: string]: { type: string; value: any }
   readonly type: "TEXT"
   clone(): TextNode
   characters: string

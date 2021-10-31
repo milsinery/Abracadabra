@@ -209,8 +209,8 @@ const createInfoPage = (info) => {
     await figma.loadFontAsync({ family: "Roboto", style: "Regular" });
 
     const info = figma.createText();
-    info.characters = `${author} — ${link}, Photo — ${url}, unsplash.com`;
-
+    info.characters = `${author}`;
+    info.hyperlink = { type: "URL", value: url };
     line.appendChild(info);
 
     parent.appendChild(line);
@@ -272,11 +272,14 @@ figma.ui.onmessage = (msg) => {
   } 
   
   if (text.length > 0) {
-    text.map((item) => replaceText(item.name.toLocaleUpperCase(), item, onChangeSetting));
+    Promise.all(
+      text.map(
+        (item) => new Promise(() => replaceText(item.name.toLocaleUpperCase(), item, onChangeSetting))
+      )
+    ).then(() => {
+      figma.notify("Whoo!", { timeout: 1500 });
+      figma.currentPage.setRelaunchData({ open: '' });
+      figma.closePlugin()
+    })
   }
-
-  figma.notify("Whoo!", { timeout: 1500 });
-
-  figma.currentPage.setRelaunchData({ open: '' });
-  figma.closePlugin();
 };
