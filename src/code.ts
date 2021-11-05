@@ -326,6 +326,22 @@ figma.ui.onmessage = (msg) => {
     figma.notify(msg.data, { timeout: 1500 });
   }
 
+  if(msg.type === 'data' && text.length > 0) {
+    for (let i = 0; i < images.length; i++) {
+      addImage(images[i], msg.data.images[i], onChangeSetting);
+    }
+
+    Promise.all(
+      text.map((item) =>
+        replaceText(item.name.toLocaleUpperCase(), item, onChangeSetting)
+      )
+    ).then(() => createInfoPage(msg.data.info).then()).then(() => {
+      figma.notify('Whoo!', { timeout: 1500 });
+      figma.currentPage.setRelaunchData({ open: '' });
+      figma.closePlugin();
+    }) 
+  }
+
   if (msg.type === 'data') {
     for (let i = 0; i < images.length; i++) {
       addImage(images[i], msg.data.images[i], onChangeSetting);
@@ -346,4 +362,6 @@ figma.ui.onmessage = (msg) => {
       figma.closePlugin();
     });
   }
+
+  
 };
