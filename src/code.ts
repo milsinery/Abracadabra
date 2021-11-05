@@ -272,11 +272,7 @@ figma.ui.onmessage = (msg) => {
   } 
   
   if (text.length > 0) {
-    Promise.all(
-      text.map(
-        (item) => new Promise(() => replaceText(item.name.toLocaleUpperCase(), item, onChangeSetting))
-      )
-    ).then(() => {
+    Promise.all(text.map((item) => replaceText(item.name.toLocaleUpperCase(), item, onChangeSetting))).then(result => {
       figma.notify("Whoo!", { timeout: 1500 });
       figma.currentPage.setRelaunchData({ open: '' });
       figma.closePlugin()
