@@ -1,216 +1,278 @@
-import faker from "faker";
+import faker from 'faker';
 
 figma.showUI(__html__, { visible: false });
 
 const addImage = (layer, data, onceChange = false) => {
   let imageHash = figma.createImage(data).hash;
-  layer.fills = [{ type: "IMAGE", scaleMode: "FILL", imageHash }];
+  layer.fills = [{ type: 'IMAGE', scaleMode: 'FILL', imageHash }];
 
-  if(onceChange) {
-    layer.name = "🏞";
+  if (onceChange) {
+    layer.name = '🏞';
   }
 };
 
 const findParent = (obj) => {
-  return obj.parent.type === "PAGE" ? obj : findParent(obj.parent);
+  return obj.parent.type === 'PAGE' ? obj : findParent(obj.parent);
 };
 
-const getDRandomDate = (locale = "en") => {
-  const randomDate = new Date(2021, Math.floor(Math.random() * (13 - 1) + 1), Math.floor(Math.random() * (29 - 1) + 1));
+const getDRandomDate = (locale = 'en') => {
+  const randomDate = new Date(
+    2021,
+    Math.floor(Math.random() * (13 - 1) + 1),
+    Math.floor(Math.random() * (29 - 1) + 1)
+  );
 
   const getMonth = (num) => {
-    if(locale === "en") {
-      return num === 0 ? "Jan" : num === 1 ? "Feb" : num === 2 ? "Mar" : num === 3 ? "Apr" : num === 4 ? "May" : num === 5 ? "Jun" : num === 6 ? "Jul" : num === 7 ? "Aug" : num === 8 ? "Sep" : num === 9 ? "Oct" : num === 10 ? "Nov" : "Dec";
+    if (locale === 'en') {
+      return num === 0
+        ? 'Jan'
+        : num === 1
+        ? 'Feb'
+        : num === 2
+        ? 'Mar'
+        : num === 3
+        ? 'Apr'
+        : num === 4
+        ? 'May'
+        : num === 5
+        ? 'Jun'
+        : num === 6
+        ? 'Jul'
+        : num === 7
+        ? 'Aug'
+        : num === 8
+        ? 'Sep'
+        : num === 9
+        ? 'Oct'
+        : num === 10
+        ? 'Nov'
+        : 'Dec';
     } else {
-      return num === 0 ? "Янв" : num === 1 ? "Фев" : num === 2 ? "Мар" : num === 3 ? "Апр" : num === 4 ? "Май" : num === 5 ? "Июн" : num === 6 ? "Июл" : num === 7 ? "Авг" : num === 8 ? "Сен" : num === 9 ? "Окт" : num === 10 ? "Ноя" : "Дек";
+      return num === 0
+        ? 'Янв'
+        : num === 1
+        ? 'Фев'
+        : num === 2
+        ? 'Мар'
+        : num === 3
+        ? 'Апр'
+        : num === 4
+        ? 'Май'
+        : num === 5
+        ? 'Июн'
+        : num === 6
+        ? 'Июл'
+        : num === 7
+        ? 'Авг'
+        : num === 8
+        ? 'Сен'
+        : num === 9
+        ? 'Окт'
+        : num === 10
+        ? 'Ноя'
+        : 'Дек';
     }
-  }
+  };
 
-  return locale === "en" ? `${getMonth(randomDate.getMonth())} ${randomDate.getDate()} ${randomDate.getFullYear()}` : `${randomDate.getDate()} ${getMonth(randomDate.getMonth())} ${randomDate.getFullYear()}`;
-}
+  return locale === 'en'
+    ? `${getMonth(
+        randomDate.getMonth()
+      )} ${randomDate.getDate()} ${randomDate.getFullYear()}`
+    : `${randomDate.getDate()} ${getMonth(
+        randomDate.getMonth()
+      )} ${randomDate.getFullYear()}`;
+};
 
 const replaceText = async (name, textLayer, onceChange = false) => {
   await figma.loadFontAsync(textLayer.fontName);
 
   if (name.match(/[А-Я]/)) {
-    faker.locale = "ru";
+    faker.locale = 'ru';
 
     textLayer.characters =
-      name === "$ПОЛНОЕ ИМЯ"
+      name === '$ПОЛНОЕ ИМЯ'
         ? faker.name.findName()
-        : name === "$ИМЯ"
+        : name === '$ИМЯ'
         ? faker.name.firstName()
-        : name === "$ФАМИЛИЯ"
+        : name === '$ФАМИЛИЯ'
         ? faker.name.findName()
-        : name === "$НИК"
+        : name === '$НИК'
         ? faker.internet.userName()
-        : name === "$ДОЛЖНОСТЬ"
+        : name === '$ДОЛЖНОСТЬ'
         ? faker.name.jobTitle()
-        : name === "$ПОЧТА"
+        : name === '$ПОЧТА'
         ? faker.internet.email()
-        : name === "$НОМЕР ТЕЛЕФОНА"
+        : name === '$НОМЕР ТЕЛЕФОНА'
         ? faker.phone.phoneNumber()
-        : name === "$СТРАНА"
+        : name === '$СТРАНА'
         ? faker.address.country()
-        : name === "$ГОРОД"
+        : name === '$ГОРОД'
         ? faker.address.city()
-        : name === "$ИНДЕКС"
+        : name === '$ИНДЕКС'
         ? faker.address.zipCode()
-        : name === "$АДРЕС"
+        : name === '$АДРЕС'
         ? faker.address.streetAddress()
-        : name === "$МЕСЯЦ"
+        : name === '$МЕСЯЦ'
         ? faker.date.month()
-        : name === "$ДЕНЬ НЕДЕЛИ"
+        : name === '$ДЕНЬ НЕДЕЛИ'
         ? faker.date.weekday()
-        : name === "$НОМЕР КАРТЫ"
+        : name === '$НОМЕР КАРТЫ'
         ? faker.finance.creditCardNumber()
-        : name === "$ЦЕНА"
-        ? faker.commerce.price() + " ₽"
-        : name === "$ЧИСЛО"
+        : name === '$ЦЕНА'
+        ? faker.commerce.price() + ' ₽'
+        : name === '$ЧИСЛО'
         ? faker.random.number().toString()
-        : name === "$СЛОВО"
+        : name === '$СЛОВО'
         ? faker.random.word()
-        : name === "$АБЗАЦ"
+        : name === '$АБЗАЦ'
         ? faker.lorem.paragraph()
-        : name === "$ВОЗРАСТ"
+        : name === '$ВОЗРАСТ'
         ? (Math.floor(Math.random() * (100 - 18)) + 18).toString()
-        : name === "$ПОДСКАЗКА"
-        ? "Полное имя\nИмя\nФамилия\nНик\nДолжность\nПочта\nНомер телефона\nСтрана\nГород\nИндекс\nАдрес\nМесяц\nДень недели\nНомер карты\nЦена\nЧисло\nСлово\nАбзац\nВозраст"
-        : name === "$ДАТА"
-        ? getDRandomDate("ru")
-        : textLayer.characters
+        : name === '$ПОДСКАЗКА'
+        ? 'Полное имя\nИмя\nФамилия\nНик\nДолжность\nПочта\nНомер телефона\nСтрана\nГород\nИндекс\nАдрес\nМесяц\nДень недели\nНомер карты\nЦена\nЧисло\nСлово\nАбзац\nВозраст'
+        : name === '$ДАТА'
+        ? getDRandomDate('ru')
+        : textLayer.characters;
   } else {
-    if(name.lastIndexOf("_DE") !== -1) {
-      faker.locale = "de";
+    if (name.lastIndexOf('_DE') !== -1) {
+      faker.locale = 'de';
 
       textLayer.characters =
-        name === "$NAME_DE"
+        name === '$NAME_DE'
           ? faker.name.findName()
-          : name === "$FIRST NAME_DE"
+          : name === '$FIRST NAME_DE'
           ? faker.name.firstName()
-          : name === "$LAST NAME_DE"
+          : name === '$LAST NAME_DE'
           ? faker.name.lastName()
-          : name === "$USERNAME_DE"
+          : name === '$USERNAME_DE'
           ? faker.internet.userName()
-          : name === "$JOB_DE"
+          : name === '$JOB_DE'
           ? faker.name.jobTitle()
-          : name === "$EMAIL_DE"
+          : name === '$EMAIL_DE'
           ? faker.internet.email()
-          : name === "$PHONE NUMBER_DE"
+          : name === '$PHONE NUMBER_DE'
           ? faker.phone.phoneNumber()
-          : name === "$COUNTRY_DE"
+          : name === '$COUNTRY_DE'
           ? faker.address.country()
-          : name === "$CITY_DE"
+          : name === '$CITY_DE'
           ? faker.address.city()
-          : name === "$ZIP CODE_DE"
+          : name === '$ZIP CODE_DE'
           ? faker.address.zipCode()
-          : name === "$ADDRESS_DE"
+          : name === '$ADDRESS_DE'
           ? faker.address.streetAddress()
-          : name === "$MONTH_DE"
+          : name === '$MONTH_DE'
           ? faker.date.month()
-          : name === "$WEEKDAY_DE"
+          : name === '$WEEKDAY_DE'
           ? faker.date.weekday()
-          : name === "$CREDIT CARD_DE"
+          : name === '$CREDIT CARD_DE'
           ? faker.finance.creditCardNumber()
-          : name === "$PRICE_DE"
-          ? "$" + faker.commerce.price()
-          : name === "$NUMBER_DE"
+          : name === '$PRICE_DE'
+          ? '$' + faker.commerce.price()
+          : name === '$NUMBER_DE'
           ? faker.random.number().toString()
-          : name === "$WORD_DE"
+          : name === '$WORD_DE'
           ? faker.random.word()
-          : name === "$PARAGRAPH_DE"
+          : name === '$PARAGRAPH_DE'
           ? faker.lorem.paragraph()
-          : name === "$AGE_DE"
+          : name === '$AGE_DE'
           ? (Math.floor(Math.random() * (100 - 18)) + 18).toString()
-          : name === "$HELP_DE"
-          ? "Name_de\nFirst Name_de\nLast Name_de\nUsername_de\nJob_de\nEmail_de\nPhone Number_de\nCountry_de\nCity_de\nZip Code_de\nAddress_de\nMonth_de\nWeekday_de\nCredit Card_de\nPrice_de\nNumber_de\nWord_de\nParagraph_de\nAge_de"
-          : name === "$DATE_DE"
+          : name === '$HELP_DE'
+          ? 'Name_de\nFirst Name_de\nLast Name_de\nUsername_de\nJob_de\nEmail_de\nPhone Number_de\nCountry_de\nCity_de\nZip Code_de\nAddress_de\nMonth_de\nWeekday_de\nCredit Card_de\nPrice_de\nNumber_de\nWord_de\nParagraph_de\nAge_de'
+          : name === '$DATE_DE'
           ? getDRandomDate()
-          : textLayer.characters
+          : textLayer.characters;
     } else {
-      faker.locale = "en";
+      faker.locale = 'en';
 
       textLayer.characters =
-        name === "$NAME"
+        name === '$NAME'
           ? faker.name.findName()
-          : name === "$FIRST NAME"
+          : name === '$FIRST NAME'
           ? faker.name.firstName()
-          : name === "$LAST NAME"
+          : name === '$LAST NAME'
           ? faker.name.lastName()
-          : name === "$USERNAME"
+          : name === '$USERNAME'
           ? faker.internet.userName()
-          : name === "$JOB"
+          : name === '$JOB'
           ? faker.name.jobTitle()
-          : name === "$EMAIL"
+          : name === '$EMAIL'
           ? faker.internet.email()
-          : name === "$PHONE NUMBER"
+          : name === '$PHONE NUMBER'
           ? faker.phone.phoneNumber()
-          : name === "$COUNTRY"
+          : name === '$COUNTRY'
           ? faker.address.country()
-          : name === "$CITY"
+          : name === '$CITY'
           ? faker.address.city()
-          : name === "$ZIP CODE"
+          : name === '$ZIP CODE'
           ? faker.address.zipCode()
-          : name === "$ADDRESS"
+          : name === '$ADDRESS'
           ? faker.address.streetAddress()
-          : name === "$MONTH"
+          : name === '$MONTH'
           ? faker.date.month()
-          : name === "$WEEKDAY"
+          : name === '$WEEKDAY'
           ? faker.date.weekday()
-          : name === "$CREDIT CARD"
+          : name === '$CREDIT CARD'
           ? faker.finance.creditCardNumber()
-          : name === "$PRICE"
-          ? "$" + faker.commerce.price()
-          : name === "$NUMBER"
+          : name === '$PRICE'
+          ? '$' + faker.commerce.price()
+          : name === '$NUMBER'
           ? faker.random.number().toString()
-          : name === "$WORD"
+          : name === '$WORD'
           ? faker.random.word()
-          : name === "$PARAGRAPH"
+          : name === '$PARAGRAPH'
           ? faker.lorem.paragraph()
-          : name === "$AGE"
+          : name === '$AGE'
           ? (Math.floor(Math.random() * (100 - 18)) + 18).toString()
-          : name === "$HELP"
-          ? "Name\nFirst Name\nLast Name\nUsername\nJob\nEmail\nPhone Number\nCountry\nCity\nZip Code\nAddress\nMonth\nWeekday\nCredit Card\nPrice\nNumber\nWord\nParagraph\nAge"
-          : name === "$DATE"
+          : name === '$HELP'
+          ? 'Name\nFirst Name\nLast Name\nUsername\nJob\nEmail\nPhone Number\nCountry\nCity\nZip Code\nAddress\nMonth\nWeekday\nCredit Card\nPrice\nNumber\nWord\nParagraph\nAge'
+          : name === '$DATE'
           ? getDRandomDate()
-          : textLayer.characters
+          : textLayer.characters;
     }
   }
 
-  if(onceChange) {
+  if (onceChange) {
     textLayer.name = textLayer.characters;
   }
 };
 
 // getting the necessary elements from the layout
 const selected = figma.currentPage.findAll(
-  (item) => findParent(item).type !== "COMPONENT" && item.name[0] === "$"
+  (item) => findParent(item).type !== 'COMPONENT' && item.name[0] === '$'
 );
 
-const text = selected.filter((item) => item.type === "TEXT");
-const onChangeSetting = figma.currentPage.findAll(item => item.type === "TEXT" && (item.characters === "Abracadabra for one time" || item.characters === "Абракадабра на один раз")).length > 0 ? true : false;
+const text = selected.filter((item) => item.type === 'TEXT');
+const onChangeSetting =
+  figma.currentPage.findAll(
+    (item) =>
+      item.type === 'TEXT' &&
+      (item.characters === 'Abracadabra for one time' ||
+        item.characters === 'Абракадабра на один раз')
+  ).length > 0
+    ? true
+    : false;
 
 const images = selected.filter(
   (item) =>
-    item.type !== "TEXT" &&
-    (item.name.toUpperCase() === "$PHOTO" ||
-      item.name.toUpperCase() === "$ФОТО")
+    item.type !== 'TEXT' &&
+    (item.name.toUpperCase() === '$PHOTO' ||
+      item.name.toUpperCase() === '$ФОТО')
 );
 
-const createInfoPage = (info) => {
-  const createInfoString = async (parent, author, link, url) => {
+const createInfoPage = async (info) => {
+  await figma.loadFontAsync({ family: 'Roboto', style: 'Regular' });
+
+  const createInfoString = (parent, author, url) => {
     const line = figma.createFrame();
     line.name = author;
-    line.layoutMode = "HORIZONTAL";
-    line.counterAxisSizingMode = "AUTO";
-    line.primaryAxisSizingMode = "AUTO";
+    line.layoutMode = 'HORIZONTAL';
+    line.counterAxisSizingMode = 'AUTO';
+    line.primaryAxisSizingMode = 'AUTO';
     line.itemSpacing = 8;
-
-    await figma.loadFontAsync({ family: "Roboto", style: "Regular" });
 
     const info = figma.createText();
     info.characters = `${author}`;
-    info.hyperlink = { type: "URL", value: url };
+    info.hyperlink = { type: 'URL', value: url };
     line.appendChild(info);
 
     parent.appendChild(line);
@@ -218,21 +280,21 @@ const createInfoPage = (info) => {
 
   if (
     figma.currentPage.findChild(
-      (item) => item.name === "Abracadabra uses photos from Unsplash"
+      (item) => item.name === 'Abracadabra uses photos from Unsplash'
     )
   ) {
     figma.currentPage
       .findChild(
-        (item) => item.name === "Abracadabra uses photos from Unsplash"
+        (item) => item.name === 'Abracadabra uses photos from Unsplash'
       )
       .remove();
   }
 
   const frame = figma.createFrame();
-  frame.name = "Abracadabra uses photos from Unsplash";
-  frame.layoutMode = "VERTICAL";
-  frame.counterAxisSizingMode = "AUTO";
-  frame.primaryAxisSizingMode = "AUTO";
+  frame.name = 'Abracadabra uses photos from Unsplash';
+  frame.layoutMode = 'VERTICAL';
+  frame.counterAxisSizingMode = 'AUTO';
+  frame.primaryAxisSizingMode = 'AUTO';
   frame.expanded = false;
   frame.paddingTop = 16;
   frame.paddingRight = 16;
@@ -245,7 +307,7 @@ const createInfoPage = (info) => {
   frame.topRightRadius = 4;
 
   for (const item of info) {
-    createInfoString(frame, item.name, item.link, item.url);
+    createInfoString(frame, item.name, item.url);
   }
 
   figma.currentPage.appendChild(frame);
@@ -256,26 +318,32 @@ figma.ui.postMessage(images.length);
 
 // replacing text and images
 figma.ui.onmessage = (msg) => {
-  if(msg.type === "empty" && text.length === 0) {
+  if (msg.type === 'empty' && text.length === 0) {
     figma.notify(msg.data, { timeout: 1500 });
   }
 
-  if (msg.type === "error") {
+  if (msg.type === 'error') {
     figma.notify(msg.data, { timeout: 1500 });
   }
 
- if (msg.type === "data") {
+  if (msg.type === 'data') {
     for (let i = 0; i < images.length; i++) {
       addImage(images[i], msg.data.images[i], onChangeSetting);
     }
-    createInfoPage(msg.data.info);
-  } 
-  
+    createInfoPage(msg.data.info).then(() => {
+      figma.closePlugin();
+    });
+  }
+
   if (text.length > 0) {
-    Promise.all(text.map((item) => replaceText(item.name.toLocaleUpperCase(), item, onChangeSetting))).then(result => {
-      figma.notify("Whoo!", { timeout: 1500 });
+    Promise.all(
+      text.map((item) =>
+        replaceText(item.name.toLocaleUpperCase(), item, onChangeSetting)
+      )
+    ).then(() => {
+      figma.notify('Whoo!', { timeout: 1500 });
       figma.currentPage.setRelaunchData({ open: '' });
-      figma.closePlugin()
-    })
+      figma.closePlugin();
+    });
   }
 };
