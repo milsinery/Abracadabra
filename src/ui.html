@@ -35,7 +35,7 @@
 
         if (state.imagesNumber === 1) {
           fetch(
-            "https://api.unsplash.com/photos/random?client_id=IaihTE2BNqZx11LDh7V_T85XwUU-a9aMy0VBjtNbKvI"
+            "https://api.unsplash.com/photos/random?client_id=/////ID//////"
           )
             .catch(() => {
               parent.postMessage(
@@ -73,7 +73,7 @@
           fetch(
             "https://api.unsplash.com/photos?page=" +
               state.pageNumber +
-              "&per_page=30&client_id=IaihTE2BNqZx11LDh7V_T85XwUU-a9aMy0VBjtNbKvI"
+              "&per_page=30&client_id=/////ID//////"
           )
             .catch(() => {
               parent.postMessage(
@@ -119,7 +119,7 @@
               state.pageNumber +
               "&per_page=" +
               state.imagesNumber +
-              "&client_id=IaihTE2BNqZx11LDh7V_T85XwUU-a9aMy0VBjtNbKvI"
+              "&client_id=/////ID//////"
           )
             .catch(() => {
               parent.postMessage(

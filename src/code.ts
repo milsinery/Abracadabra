@@ -15,6 +15,12 @@ const findParent = (obj) => {
   return obj.parent.type === 'PAGE' ? obj : findParent(obj.parent);
 };
 
+const getTime = () => {
+  const ampm = Math.floor(Math.random() * 2) === 0 ? "PM" : "AM";
+  const time = (`${Math.floor(Math.random() * (2 - 0) + 0)}${Math.floor(Math.random() * (2 - 1) + 1)}:${Math.floor(Math.random() * (5 - 0) + 0)}${Math.floor(Math.random() * (9 - 0) + 0)} ${ampm}`);
+  return time;
+}
+
 const getDRandomDate = (locale = 'en') => {
   const randomDate = new Date(
     2021,
@@ -98,6 +104,8 @@ const replaceText = async (name, textLayer, onceChange = false) => {
         ? faker.name.findName()
         : name === '$НИК'
         ? faker.internet.userName()
+        : name === '$ЗАГОЛОВОК'
+        ? faker.lorem.paragraph().split(' ').slice(0,3).join(' ')
         : name === '$ДОЛЖНОСТЬ'
         ? faker.name.jobTitle()
         : name === '$ПОЧТА'
@@ -126,6 +134,8 @@ const replaceText = async (name, textLayer, onceChange = false) => {
         ? faker.random.word()
         : name === '$АБЗАЦ'
         ? faker.lorem.paragraph()
+        : name === '$ВРЕМЯ'
+        ? faker.date.past().toString().match(/\b[0-2]?\d:[0-5]\d\b/)[0]
         : name === '$ВОЗРАСТ'
         ? (Math.floor(Math.random() * (100 - 18)) + 18).toString()
         : name === '$ПОДСКАЗКА'
@@ -146,6 +156,8 @@ const replaceText = async (name, textLayer, onceChange = false) => {
           ? faker.name.lastName()
           : name === '$USERNAME_DE'
           ? faker.internet.userName()
+          : name === '$TITLE_DE'
+          ? faker.lorem.paragraph().split(' ').slice(0,3).join(' ')
           : name === '$JOB_DE'
           ? faker.name.jobTitle()
           : name === '$EMAIL_DE'
@@ -174,6 +186,8 @@ const replaceText = async (name, textLayer, onceChange = false) => {
           ? faker.random.word()
           : name === '$PARAGRAPH_DE'
           ? faker.lorem.paragraph()
+          : name === '$TIME_DE'
+          ? getTime()
           : name === '$AGE_DE'
           ? (Math.floor(Math.random() * (100 - 18)) + 18).toString()
           : name === '$HELP_DE'
@@ -193,6 +207,8 @@ const replaceText = async (name, textLayer, onceChange = false) => {
           ? faker.name.lastName()
           : name === '$USERNAME'
           ? faker.internet.userName()
+          : name === '$TITLE'
+          ? faker.lorem.paragraph().split(' ').slice(0,3).join(' ')
           : name === '$JOB'
           ? faker.name.jobTitle()
           : name === '$EMAIL'
@@ -221,6 +237,8 @@ const replaceText = async (name, textLayer, onceChange = false) => {
           ? faker.random.word()
           : name === '$PARAGRAPH'
           ? faker.lorem.paragraph()
+          : name === '$TIME'
+          ? getTime()
           : name === '$AGE'
           ? (Math.floor(Math.random() * (100 - 18)) + 18).toString()
           : name === '$HELP'
@@ -319,11 +337,13 @@ figma.ui.postMessage(images.length);
 // replacing text and images
 figma.ui.onmessage = (msg) => {
   if (msg.type === 'empty' && text.length === 0) {
-    figma.notify(msg.data, { timeout: 1500 });
+    figma.notify(msg.data);
+    figma.closePlugin();
   }
 
   if (msg.type === 'error') {
-    figma.notify(msg.data, { timeout: 1500 });
+    figma.notify(msg.data);
+    figma.closePlugin();
   }
 
   if(msg.type === 'data' && text.length > 0) {
@@ -331,13 +351,10 @@ figma.ui.onmessage = (msg) => {
       addImage(images[i], msg.data.images[i], onChangeSetting);
     }
 
-    Promise.all(
-      text.map((item) =>
-        replaceText(item.name.toLocaleUpperCase(), item, onChangeSetting)
-      )
-    ).then(() => createInfoPage(msg.data.info).then()).then(() => {
-      figma.notify('Whoo!', { timeout: 1500 });
-      figma.currentPage.setRelaunchData({ open: '' });
+    const textLayers = text.map((item) => replaceText(item.name.toLocaleUpperCase(), item, onChangeSetting));
+
+    Promise.all(textLayers).then(() => createInfoPage(msg.data.info)).then(() => {
+      figma.notify('Whoo!');
       figma.closePlugin();
     }) 
   }
@@ -347,21 +364,17 @@ figma.ui.onmessage = (msg) => {
       addImage(images[i], msg.data.images[i], onChangeSetting);
     }
     createInfoPage(msg.data.info).then(() => {
+      figma.notify('Whoo!');
       figma.closePlugin();
     });
   }
 
   if (text.length > 0) {
-    Promise.all(
-      text.map((item) =>
-        replaceText(item.name.toLocaleUpperCase(), item, onChangeSetting)
-      )
-    ).then(() => {
-      figma.notify('Whoo!', { timeout: 1500 });
-      figma.currentPage.setRelaunchData({ open: '' });
+    const textLayers = text.map((item) => replaceText(item.name.toLocaleUpperCase(), item, onChangeSetting))
+
+    Promise.all(textLayers).then(() => {
+      figma.notify('Whoo!');
       figma.closePlugin();
     });
   }
-
-  
 };
