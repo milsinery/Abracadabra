@@ -35,7 +35,11 @@
 
         if (state.imagesNumber === 1) {
           fetch(
+<<<<<<< HEAD
             "https://api.unsplash.com/photos/random?client_id=/////ID//////"
+=======
+            "https://api.unsplash.com/photos/random?client_id=////////ID////////////"
+>>>>>>> cdfa62c9229689bc73c4db49a8b839ab96fa4f95
           )
             .catch(() => {
               parent.postMessage(
@@ -73,7 +77,11 @@
           fetch(
             "https://api.unsplash.com/photos?page=" +
               state.pageNumber +
+<<<<<<< HEAD
               "&per_page=30&client_id=/////ID//////"
+=======
+              "&per_page=30&client_id=////////////ID///////////"
+>>>>>>> cdfa62c9229689bc73c4db49a8b839ab96fa4f95
           )
             .catch(() => {
               parent.postMessage(
